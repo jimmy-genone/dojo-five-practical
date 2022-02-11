@@ -35,6 +35,9 @@ Provide this unprotected endpoint credential to retrieve access token needed to 
 ``` 
 Hard coded user credentials that work can be found in the [UserService file](./apps/api/src/app/users/users.service.ts)
 
+## Notes
+Challenge was fairly straightforward, so decided to stick with a familiar framework that I knew had the tools that could handle user login and token generation and authenttication. Framework includes tools like testing and running them can be found in auto-generated README portion below.
+
 ---
 <br>
 This project was generated using [Nx](https://nx.dev).
