@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module'
+import { JwtService } from '@nestjs/jwt'
 import { User, UsersService } from '../users/users.service'
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -10,14 +10,18 @@ describe('AuthService', () => {
     username: 'john',
     password: 'changeme',
   })}
+  const jwtService = {
+    sign: () => "jwtServiceSinedtoken"
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [UsersModule],
-      providers: [AuthService],
+      providers: [JwtService,UsersService,AuthService],
     })
       .overrideProvider(UsersService)
       .useValue(userService)
+      .overrideProvider(JwtService)
+      .useValue(jwtService)
       .compile();
 
     service = module.get<AuthService>(AuthService);
@@ -27,21 +31,33 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
-  it('user validation should be null if not a user', async () => {
-    const validatedUser = await service.validateUser("notauser", "somepassword")
-    expect(validatedUser).toBeNull()
-  });
+  describe('validateUser', () => {
+    it('user validation should be null if not a user', async () => {
+      const validatedUser = await service.validateUser("notauser", "somepassword")
+      expect(validatedUser).toBeNull()
+    });
 
-  it('user validation should be null if user password incorrect', async () => {
-    const validatedUser = await service.validateUser("john", "wrongpassword")
-    expect(validatedUser).toBeNull()
-  });
+    it('user validation should be null if user password incorrect', async () => {
+      const validatedUser = await service.validateUser("john", "wrongpassword")
+      expect(validatedUser).toBeNull()
+    });
 
-  it('should return user without password', async () => {
-    const validatedUser = await service.validateUser("john", "changeme")
-    expect(validatedUser).toMatchObject<Omit<User,'password'>>({
-      userId: 1,
-      username: 'john'
-    })
-  });
+    it('should return user without password', async () => {
+      const validatedUser = await service.validateUser("john", "changeme")
+      expect(validatedUser).toMatchObject<Omit<User,'password'>>({
+        userId: 1,
+        username: 'john'
+      })
+    });
+  })
+
+  describe('login', () => {
+    it('should return signed access token from use inf', async () => {
+      const token = await service.login({username:"test", userId:4})
+      expect(token).toMatchObject<{access_token: string}>({
+        access_token: "jwtServiceSinedtoken"
+      })
+    });
+  })
+
 });

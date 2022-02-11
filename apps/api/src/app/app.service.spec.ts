@@ -13,9 +13,11 @@ describe('AppService', () => {
     service = app.get<AppService>(AppService);
   });
 
-  describe('getData', () => {
-    it('should return "Welcome to api!"', () => {
-      expect(service.getData()).toEqual({ message: 'Welcome to api!' });
+  describe('getCurrentTime', () => {
+    it('should return current time in correct format', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2022,0,1,12,0));
+      expect(service.getCurrentTime()).toEqual({ currentTime: '12:00:00 PM' });
     });
   });
 });
