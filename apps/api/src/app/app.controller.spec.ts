@@ -19,4 +19,12 @@ describe('AppController', () => {
       expect(appController.getData()).toEqual({ message: 'Welcome to api!' });
     });
   });
+
+  describe('login', () => {
+    it('should return user if user in request', () => {
+      const appController = app.get<AppController>(AppController);
+      const user = appController.login({user: {userId:1, username:"john"}})
+      expect(user).toMatchObject({userId:1, username:"john"});
+    });
+  });
 });
