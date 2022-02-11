@@ -1,7 +1,42 @@
 
 
-# DojoFive
+# DojoFive Practical Challenge
 
+This project was developed using Node.js version 16.14.0 and contains a `.nvmrc` file for use with [NVM](https://github.com/nvm-sh/nvm).
+
+## Docker
+### Build
+```zsh
+docker build -t api .
+```
+### RUN
+```zsh
+docker run -p 3333:3333 api
+```
+(Optional) There are some environment variables that can be changed when running the application
+| name  | default | description |
+| ------------- | ------------- | ------------- | 
+| `SECRET`  | genonedojofive  | Secret used by JWT Service to generate tokens
+| `TZ`  | America/New_York  | Sets time zone of server
+```zsh
+docker run -e SECRET=genoneDojoFive -e TZ=America/Los_Angeles -p 3333:3333 api
+```
+## Endpoints
+### `GET /`
+Protected root endpoint gives the current server time. Token received from `/login` endpoint must be set as the Bearer Token of the request
+
+### `POST /login`
+Provide this unprotected endpoint credential to retrieve access token needed to retrieve the current time. Body must contain JSON that follows the following format
+```Typescript
+ {
+  username: string,
+  password: string
+}
+``` 
+Hard coded user credentials that work can be found in the [UserService file](./apps/api/src/app/users/users.service.ts)
+
+---
+<br>
 This project was generated using [Nx](https://nx.dev).
 
 <p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
