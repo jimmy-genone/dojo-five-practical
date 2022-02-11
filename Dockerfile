@@ -13,10 +13,15 @@ RUN /app/node_modules/.bin/nx build api --prod && npm prune --production && /usr
 
 FROM node:16-alpine
 
+ENV NODE_ENV=production
+
 WORKDIR /app
 
 COPY --from=build /app/dist/apps/api/* ./
 COPY --from=build /app/node_modules ./node_modules
+
+ENV SECRET=genonedojofive
+ENV TZ=America/New_York
 
 EXPOSE 3333
 
